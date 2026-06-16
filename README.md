@@ -1,0 +1,105 @@
+# ROP-Bench
+
+This repository contains code, harmonized public metadata, split files, result
+tables and manuscript figures for a public benchmark of retinopathy of
+prematurity (ROP) artificial intelligence under center and annotator shift.
+
+The manuscript analyzes four public ROP fundus image datasets:
+
+- FARFUM-RoP
+- Shenzhen Eye Hospital ROP dataset
+- HVDROPDB
+- Ostrava Retinal Image Dataset of Infants and ROP
+
+Raw image files are not redistributed in this repository. Users should download
+the upstream public datasets from their original sources and comply with each
+dataset's license or terms of use.
+
+## Repository Contents
+
+```text
+scripts/                         Analysis and figure-generation scripts
+data/processed/manifest_public.csv
+data/processed/patient_splits_public.csv
+data/processed/finetune_results.csv
+notes/results.md                 Numeric result notes used for the manuscript
+paper/                           Manuscript source and final figure PDFs
+```
+
+`manifest_public.csv` removes local filesystem paths and keeps only public
+metadata, labels and source image identifiers. The original private working
+manifest used local image paths only for running experiments.
+
+## Reproduction Outline
+
+1. Create a Python environment and install dependencies:
+
+```bash
+pip install -r requirements.txt
+```
+
+2. Download the upstream datasets from their original repositories or archives.
+Place them under:
+
+```text
+data/raw/farfum/
+data/raw/shenzhen/
+data/raw/hvdropdb/
+data/raw/czech/
+```
+
+3. Build the harmonized manifest and patient-level splits:
+
+```bash
+python scripts/build_manifest.py
+python scripts/make_splits.py
+```
+
+4. Run frozen-backbone linear probes. Example:
+
+```bash
+python scripts/probe.py --task presence --backbone vit_base_patch14_dinov2.lvd142m
+python scripts/probe.py --task presence --backbone vit_base_patch14_dinov2.lvd142m --img_size 224
+python scripts/probe.py --task presence --backbone retfound_cfp
+```
+
+RETFound weights are not redistributed here. Download the public RETFound color
+fundus photography checkpoint from the original RETFound source and place it at:
+
+```text
+pretrained/RETFound_cfp_weights.pth
+```
+
+5. Run paired bootstrap and annotator analyses:
+
+```bash
+python scripts/bootstrap_compare.py
+python scripts/rq3_annotator.py
+```
+
+6. Regenerate figures:
+
+```bash
+python scripts/make_figures.py
+```
+
+The scripts use the repository root by default. To run from another location,
+set:
+
+```bash
+export ROP_BENCH_ROOT=/path/to/rop-bench
+```
+
+## Data Redistribution
+
+This repository does not redistribute raw fundus images. The released metadata,
+split files and result tables are intended to support reproducibility of the
+published benchmark while preserving upstream dataset ownership and licensing.
+
+See `DATA_LICENSES.md` for dataset-source and license notes.
+
+## Citation
+
+If you use this repository, please cite the manuscript and the four upstream
+public datasets. A `CITATION.cff` file is included for software citation.
+

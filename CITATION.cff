@@ -1,0 +1,11 @@
+cff-version: 1.2.0
+message: "If you use this software or metadata, please cite the associated manuscript and this archived release."
+title: "ROP-Bench: a public retinopathy of prematurity AI benchmark under center and annotator shift"
+authors:
+  - family-names: Luo
+    given-names: Jin
+version: "1.0.0"
+date-released: "2026-06-16"
+repository-code: "https://github.com/foye80/rop-bench"
+license: MIT
+
