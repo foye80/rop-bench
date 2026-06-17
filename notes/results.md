@@ -131,8 +131,11 @@ the most conservative grader E (κ 0.494, below the human floor).
 - HVDROPDB tiny (185, no patient IDs); most datasets ship consensus single labels.
 - No external clinical/prospective validation; no true pediatric foundation model to compare.
 
-## 7. TODO before submission
-- [ ] Figures: cross-site heatmap (RQ1); DINOv2-vs-RETFound forest plot (RQ2); κ envelope (RQ3).
-- [ ] Optional: add FLAIR / CLIP / ImageNet-ViT to make general-vs-specialist a spectrum.
-- [ ] Bootstrap CIs on all RQ1 cells; multi-seed where feasible.
-- [ ] Target venue decision (medical imaging journal/conf; or benchmark + analysis).
+## 7. Submission-prep status
+- Manuscript figures are generated as `Fig1` through `Fig4` in `paper/`.
+- The backbone spectrum includes DINOv2, CLIP, ImageNet-supervised ViT, and RETFound.
+- Paired bootstrap CIs for the DINOv2-vs-RETFound comparison are implemented in
+  `scripts/bootstrap_compare.py`.
+- The current journal target is International Ophthalmology. HVDROPDB is treated
+  as an external test set only in the final manuscript framing because it lacks
+  patient identifiers.

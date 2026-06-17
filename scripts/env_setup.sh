@@ -1,10 +1,10 @@
 #!/usr/bin/env bash
 # Build dedicated env at project-local path (self-contained, on scratch).
 set -e
-ROOT=${ROP_BENCH_ROOT:-"$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"}
-ENV="$ROOT/env"
-export PIP_CACHE_DIR=${PIP_CACHE_DIR:-"$ROOT/.pip_cache"}
-export TMPDIR=${TMPDIR:-"$ROOT/tmp"}
+PROJECT_ROOT="${ROP_BENCH_ROOT:-$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)}"
+ENV="${ROP_BENCH_ENV:-$PROJECT_ROOT/env}"
+export PIP_CACHE_DIR="${PIP_CACHE_DIR:-$PROJECT_ROOT/.pip_cache}"
+export TMPDIR="${TMPDIR:-$PROJECT_ROOT/.tmp}"
 mkdir -p "$PIP_CACHE_DIR" "$TMPDIR"
 
 echo "[1/3] conda create -> $ENV"

@@ -42,8 +42,9 @@ The following derived files are released:
 
 These files do not contain raw retinal images. They contain harmonized labels,
 dataset names, patient IDs as provided or derived from public dataset structure,
-and source image identifiers.
+and stable source image identifiers. The `source_image_id` field is relative to
+the expected `data/raw/` layout and includes enough dataset subdirectory context
+to distinguish files with the same basename.
 
 If an upstream dataset license imposes additional requirements, those terms take
 priority for the corresponding raw images.
-

@@ -17,8 +17,8 @@ ROOT = Path(os.environ.get("ROP_BENCH_ROOT", Path(__file__).resolve().parents[1]
 DEV = "cuda" if torch.cuda.is_available() else "cpu"
 
 def load_data():
-    M = pd.read_csv(f"{ROOT}/data/processed/manifest.csv")
-    S = pd.read_csv(f"{ROOT}/data/processed/patient_splits.csv")[["image_path", "split"]]
+    M = pd.read_csv(ROOT / "data" / "processed" / "manifest.csv")
+    S = pd.read_csv(ROOT / "data" / "processed" / "patient_splits.csv")[["image_path", "split"]]
     M = M.merge(S, on="image_path", how="left")
     return M[M.plus_label.notna()].reset_index(drop=True)   # FARFUM + Czech
 
@@ -44,7 +44,7 @@ def get_feats(df, backbone, model, tf, limit):
     for ds, g in df.groupby("dataset"):
         if limit:
             g = g.groupby("plus_label", group_keys=False).head(limit // 2)
-        fp = f"{cache}/{ds}{'_lim'+str(limit) if limit else ''}.npz"
+        fp = cache / f"{ds}{'_lim'+str(limit) if limit else ''}.npz"
         if os.path.exists(fp):
             z = np.load(fp, allow_pickle=True)
             paths, X = list(z["paths"]), z["X"]

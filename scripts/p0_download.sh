@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 # Phase 0 bulk download: FARFUM (rar/patient) + Shenzhen (zip) + HVDROPDB (Mendeley)
 set -u
-PROJECT_ROOT=${ROP_BENCH_ROOT:-"$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"}
+PROJECT_ROOT="${ROP_BENCH_ROOT:-$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)}"
 ROOT="$PROJECT_ROOT/data/raw"
 log(){ echo "[$(date +%H:%M:%S)] $*"; }
 

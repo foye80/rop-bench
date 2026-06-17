@@ -1,6 +1,5 @@
 % Manuscript formatted for International Ophthalmology.
 % Springer Nature LaTeX template, Original Article.
-% Replace the corresponding author email before submission.
 \documentclass[pdflatex,sn-vancouver,Numbered,iicol]{sn-jnl}
 
 \usepackage{graphicx}
@@ -347,7 +346,7 @@ Shenzhen & 0.866 & (0.999) & 0.953 \\
 \end{table}
 
 \begin{figure*}[tbp]\centering
-\includegraphics[width=0.84\textwidth]{Fig4.pdf}
+\includegraphics[width=0.84\textwidth]{Fig2.pdf}
 \caption{Representative high-confidence source-to-target failure examples. Images
 are de-identified public fundus photographs selected only for visualization after
 model fitting. (a) False-negative HVDROPDB ROP image under Czech training,
@@ -371,7 +370,7 @@ best representation in this pediatric wide-field setting, not as a general verdi
 against retinal pretraining for ROP.
 
 \begin{figure}[tbp]\centering
-\includegraphics[width=\columnwidth]{Fig2.pdf}
+\includegraphics[width=\columnwidth]{Fig3.pdf}
 \caption{Head-to-head DINOv2 and RETFound comparison on ROP presence. Values are
 paired AUC differences from the same test predictions. Intervals come from a
 paired bootstrap with patient clusters when available and image clusters for HVD.
@@ -441,7 +440,7 @@ reflects both grader reference differences and differences in the sparse image
 subsets available for each grader.
 
 \begin{figure}[tbp]\centering
-\includegraphics[width=\columnwidth]{Fig3.pdf}
+\includegraphics[width=\columnwidth]{Fig4.pdf}
 \caption{Agreement on FARFUM-RoP plus disease using sparse multi-rater labels.
 Human-human agreement is computed only on overlapping grader labels. Model-grader
 agreement overlaps part of the inter-grader range but has a lower minimum value,
@@ -538,14 +537,15 @@ for this analysis.
 participant information is reported.
 
 \textbf{Data availability} The datasets analyzed in this study are publicly
-available from the sources cited in the manuscript. The harmonization manifest and
-split files will be released in a public repository before submission or upon
-publication.
+available from the sources cited in the manuscript. The harmonization manifest,
+split files and analysis artifacts generated for this study are archived on
+Zenodo at \url{https://doi.org/10.5281/zenodo.20721027}.
 
 \textbf{Materials availability} Not applicable.
 
-\textbf{Code availability} The analysis code will be released in a public
-repository before submission or upon publication.
+\textbf{Code availability} The analysis code is available at
+\url{https://github.com/foye80/rop-bench} and archived on Zenodo at
+\url{https://doi.org/10.5281/zenodo.20721027}.
 
 \textbf{Author contribution} Jin Luo conceived the study, performed the analyses,
 interpreted the results and wrote the manuscript.

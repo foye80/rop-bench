@@ -4,8 +4,7 @@ title: "ROP-Bench: a public retinopathy of prematurity AI benchmark under center
 authors:
   - family-names: Luo
     given-names: Jin
-version: "1.0.0"
-date-released: "2026-06-16"
+version: "1.0.2"
+date-released: "2026-06-17"
 repository-code: "https://github.com/foye80/rop-bench"
 license: MIT
-

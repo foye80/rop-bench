@@ -7,9 +7,8 @@ shift. Off-diagonal = cross-device (train all A, test all B). Diagonal = in-devi
 
 Usage: python cross_device.py --backbone {vit_base_patch14_dinov2.lvd142m_224,retfound_cfp,...}
 """
-import argparse, os
+import argparse, os, numpy as np, pandas as pd
 from pathlib import Path
-import numpy as np, pandas as pd
 from sklearn.linear_model import LogisticRegression
 from sklearn.metrics import roc_auc_score
 

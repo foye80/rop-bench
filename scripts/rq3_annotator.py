@@ -17,8 +17,25 @@ from sklearn.metrics import roc_auc_score, cohen_kappa_score
 ROOT = Path(os.environ.get("ROP_BENCH_ROOT", Path(__file__).resolve().parents[1]))
 G = list("ABCDE")
 
+def require_file(path: Path, hint: str) -> Path:
+    if not path.exists():
+        raise FileNotFoundError(f"Missing {path}. {hint}")
+    return path
+
+def processed_table(stem: str) -> Path:
+    processed = ROOT / "data" / "processed"
+    private = processed / f"{stem}.csv"
+    public = processed / f"{stem}_public.csv"
+    if private.exists():
+        return private
+    return require_file(public, "Run build_manifest.py/make_splits.py, or use the released public metadata files.")
+
 # --- parse per-grader grades + consensus ---
-raw = pd.read_excel(ROOT / "data" / "raw" / "farfum" / "Dataset_Labels.xlsx", header=None)
+labels_xlsx = require_file(
+    ROOT / "data" / "raw" / "farfum" / "Dataset_Labels.xlsx",
+    "Download FARFUM-RoP and place Dataset_Labels.xlsx under data/raw/farfum/.",
+)
+raw = pd.read_excel(labels_xlsx, header=None)
 cols = ["patient", "image"] + sum([[f"grade_{g}", f"stage_{g}", f"diag_{g}"] for g in G], []) + ["Label"]
 df = raw.iloc[2:].copy(); df.columns = cols
 df = df[df.image.notna()].reset_index(drop=True)
@@ -28,12 +45,19 @@ for g in G:
 df["cons_plus"] = (pd.to_numeric(df.Label, errors="coerce") == 3).astype(int)
 
 # --- features + split ---
-z = np.load(ROOT / "data" / "processed" / "feats" / "vit_base_patch14_dinov2.lvd142m" / "FARFUM.npz", allow_pickle=True)
+feat_path = require_file(
+    ROOT / "data" / "processed" / "feats" / "vit_base_patch14_dinov2.lvd142m" / "FARFUM.npz",
+    "Generate the FARFUM DINOv2 feature cache with probe_plus.py before running RQ3.",
+)
+z = np.load(feat_path, allow_pickle=True)
 feat = {p.split("/")[-1][:-4]: x for p, x in zip(z["paths"], z["X"])}   # stem -> vec
-M = pd.read_csv(ROOT / "data" / "processed" / "manifest.csv").merge(
-    pd.read_csv(ROOT / "data" / "processed" / "patient_splits.csv")[["image_path", "split"]], on="image_path")
+M = pd.read_csv(processed_table("manifest"))
+S = pd.read_csv(processed_table("patient_splits"))
+join_key = "image_path" if "image_path" in M.columns else "source_image_id"
+M = M.merge(S[[join_key, "split"]], on=join_key)
 M = M[M.dataset == "FARFUM"].copy()
-M["stem"] = M.image_path.map(lambda p: p.split("/")[-1][:-4])
+name_col = "image_path" if "image_path" in M.columns else "source_image_id"
+M["stem"] = M[name_col].map(lambda p: str(p).split("/")[-1].rsplit(".", 1)[0])
 split = dict(zip(M.stem, M.split))
 df["split"] = df.image.map(split)
 df["X"] = df.image.map(lambda s: feat.get(s))
