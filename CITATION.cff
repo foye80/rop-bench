@@ -1,6 +1,6 @@
 cff-version: 1.2.0
 message: "If you use this software or metadata, please cite the associated manuscript and this archived release."
-title: "Public retinopathy of prematurity AI benchmarks are unstable under source and label shift"
+title: "Dataset source and label reference alter performance estimates in public retinopathy of prematurity AI benchmarks"
 authors:
   - family-names: Luo
     given-names: Jin

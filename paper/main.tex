@@ -11,8 +11,9 @@
 
 \begin{document}
 
-\title[ROP benchmarks under source and label shift]{Public retinopathy of
-prematurity AI benchmarks are unstable under source and label shift}
+\title[Source and label effects in ROP AI benchmarks]{Dataset source and label
+reference alter performance estimates in public retinopathy of prematurity AI
+benchmarks}
 
 \author[1]{\fnm{Jin} \sur{Luo}}
 
@@ -51,35 +52,35 @@ prematurity AI benchmarks are unstable under source and label shift}
   \orgaddress{\street{10 Shanggu Road}, \city{Xiamen},
   \postcode{361000}, \country{China}}}
 
-\abstract{\textbf{Purpose:} To test whether conclusions from public retinopathy
-of prematurity (ROP) artificial intelligence benchmarks remain stable when the
-dataset source and human label reference change.
+\abstract{\textbf{Purpose:} To assess how dataset source and human label
+reference affect performance estimates in public retinopathy of prematurity
+(ROP) artificial intelligence benchmarks.
 
 \textbf{Methods:} Four public ROP fundus datasets were harmonized into a
 benchmark of 8{,}821 images. ROP presence was the primary transfer task and plus
 disease was a secondary annotator variability task because plus-positive patients
-were scarce in the public data. Dataset-to-dataset transfer was used to measure
-source shift. Sparse FARFUM-RoP grader labels were used to measure label-reference
-sensitivity. DINOv2, CLIP, ImageNet and RETFound backbones were used as
-representative stress tests of benchmark ranking stability, with matched frozen
-linear probes and a secondary fine-tuning check. HVDROPDB lacked patient
-identifiers and was used only as an external test set.
+were scarce in the public data. Dataset-to-dataset transfer was evaluated with
+frozen linear probes. Sparse FARFUM-RoP grader labels were used to examine
+label-reference sensitivity. DINOv2, CLIP, ImageNet and RETFound backbones were
+compared under matched probe settings, with a secondary fine-tuning check.
+HVDROPDB lacked patient identifiers and was used only as an external test set.
 
 \textbf{Results:} A DINOv2 linear probe achieved within-center AUCs of 0.926 on
-Czech and 0.999 on Shenzhen, but cross-center AUC decreased to 0.822 and 0.866.
-HVDROPDB external-test AUC ranged from 0.739 to 0.953 by training source.
-Backbone rankings did not follow a simple specialist-over-generalist pattern:
-across transfer settings, DINOv2, CLIP and ImageNet reached mean AUCs of 0.862,
-0.844 and 0.838, compared with 0.761 for RETFound. With sparse FARFUM-RoP grader
-labels, the same model's AUC varied by 0.066 across grader-specific evaluable
-subsets.
+Czech and 0.999 on Shenzhen, with cross-center AUCs of 0.822 and 0.866. HVDROPDB
+external-test AUC ranged from 0.739 to 0.953 by training source. The Shenzhen
+within-center result was near perfect, consistent with strong dataset separability
+rather than proof of general clinical performance. Across transfer settings,
+DINOv2, CLIP and ImageNet reached mean AUCs of 0.862, 0.844 and 0.838, compared
+with 0.761 for RETFound. With sparse FARFUM-RoP grader labels, the same model's
+AUC varied by 0.066 across grader-specific evaluable subsets.
 
-\textbf{Conclusion:} Public ROP AI benchmarks are sensitive to dataset source and
-label reference. Single-source or single-label benchmark results should therefore
-be interpreted as stability tests, not as definitive model rankings.}
+\textbf{Conclusion:} Performance estimates in public ROP AI datasets depend on
+dataset source and label reference. Single-source or single-label results should
+not be interpreted as definitive model rankings without evaluation across sources
+and label references.}
 
-\keywords{retinopathy of prematurity, artificial intelligence, benchmark
-stability, source shift, label variability, pediatric ophthalmology}
+\keywords{retinopathy of prematurity, artificial intelligence, external
+validation, domain shift, annotation variability, pediatric ophthalmology}
 
 \maketitle
 
@@ -94,61 +95,52 @@ preterm infants require repeated examinations, images are often acquired across
 different cameras and care settings, and the clinical consequences of missed
 severe disease are high.
 
-Artificial intelligence (AI) has therefore become an attractive strategy for ROP
-screening and triage. Prior work has shown that deep learning can detect plus
-disease and estimate ROP vascular severity from retinal images with promising
-accuracy~\cite{brown2018,campbell2021ai}. Recent external validation studies have
-also moved the field closer to clinical translation by evaluating AI-based ROP
-screening models in low-resource and multinational telemedicine settings
-~\cite{coyner2022,coyner2024}. These studies show that ROP AI can be clinically
-useful, but they also highlight a key requirement: models must be tested outside
-the environment in which they were developed.
+Artificial intelligence (AI) has become an attractive strategy for ROP screening
+and triage. Prior work has shown that deep learning can detect plus disease and
+estimate ROP vascular severity from retinal images with promising accuracy
+~\cite{brown2018,campbell2021ai}. Recent external validation studies have also
+evaluated AI-based ROP screening models in low-resource and multinational
+telemedicine settings~\cite{coyner2022,coyner2024}. These studies show that ROP
+AI can be clinically useful, but they also highlight a key requirement: models
+must be tested outside the environment in which they were developed.
 
 Most reported AI performance, however, is still difficult to compare across
 studies. Public ROP datasets differ in country, camera system, image selection,
 patient identifiers and label definitions. A high AUC in a single curated dataset
 may reflect the local distribution as much as the underlying disease signal.
-Consequently, a benchmark intended to support deployment decisions should separate
-within-center performance from cross-center transfer, and should make explicit
-which datasets can support patient-level splitting and which can only support
-image-level external testing.
+Benchmarks intended to support deployment decisions should separate within-center
+performance from cross-center transfer and should state which datasets support
+patient-level splitting. HVDROPDB, for example, does not provide patient
+identifiers and can only be used as an image-level external test set in this
+analysis.
 
-The rapid rise of foundation models creates a useful stress test for benchmark
-stability. Retinal foundation models such as RETFound are trained on large
-ophthalmic image collections and are often expected to transfer well across eye
-disease tasks~\cite{retfound2023}. Yet ROP imaging differs from the adult retinal
-fundus photographs that dominate many pretraining datasets. ROP is imaged in
-premature infants, often with wide-field contact cameras, and the clinically
-relevant signal includes peripheral vascular and developmental features. If a
-public benchmark gives a different model ranking after a change in source dataset
-or evaluation label, the issue is not only which model wins; it is whether the
-benchmark conclusion is stable enough to guide translation.
+Foundation models add a second comparison problem. Retinal foundation models such
+as RETFound are trained on large ophthalmic image collections and are often
+expected to transfer well across eye disease tasks~\cite{retfound2023}. ROP
+images, however, are acquired from premature infants, often with wide-field
+contact cameras, and the relevant signal includes peripheral vascular and
+developmental features. It is useful to ask how much AUC changes across countries,
+cameras and label definitions, and whether model rankings persist under these
+changes.
 
 Label uncertainty is a second major obstacle. Plus disease diagnosis is known to
 have imperfect interexpert agreement even among recognized ROP experts
 ~\cite{chiang2007}. This matters for AI benchmarks because a model can appear
 strong or weak depending on which human label is treated as ground truth. A
-benchmark that reports only one consensus or one grader label may therefore hide a
-clinically important source of uncertainty.
+study that reports only one consensus or one grader label may hide a clinically
+important source of uncertainty.
 
 The most clinically actionable ROP endpoints are referable ROP, treatment
 requiring ROP and plus disease. In the public datasets available for this
 benchmark, however, those endpoints were either absent or too patient-limited for
-stable cross-center transfer analysis. We therefore use active ROP presence as
+cross-center transfer analysis. We use active ROP presence as
 the primary transfer task and treat plus disease as a secondary annotator
 variability task.
 
-We build a multi-source public ROP benchmark and use it to ask three stability
-questions: how much performance changes across dataset sources; whether the
-ranking of pretrained visual representations is stable under these public
-benchmark conditions; and how much the benchmark verdict changes when different
-human grader labels are treated as the reference. Our contributions are
-(i)~a unified benchmark over four public datasets spanning four countries and
-multiple camera systems; (ii)~a cross-site and external-test reliability map
-showing large source-dependent generalization gaps; (iii)~a representation
-ranking stress test showing that adult retinal pretraining did not provide a
-stable advantage in this pediatric wide-field setting; and (iv)~a quantification
-of benchmark sensitivity under sparse multi-rater labels.
+We harmonize four public ROP datasets and report three analyses: cross-source
+AUCs for active ROP presence, frozen-representation comparisons under matched
+linear-probe settings, and label-reference sensitivity in the FARFUM-RoP sparse
+grader labels.
 
 \section{Materials and methods}\label{sec:methods}
 
@@ -191,7 +183,7 @@ Ostrava    & Czech Rep. & 3 tagged & 6{,}004 \\
 \subsection{Label harmonization and analysis cohorts}
 The public datasets use different annotation schemes, including plus disease
 grades, ICROP stage categories, diagnosis codes and folder-level binary labels. We
-therefore created two binary tasks. The primary task was ROP presence, defined as
+created two binary tasks. The primary task was ROP presence, defined as
 any active ROP versus no active ROP. The secondary task was plus disease, defined
 as plus disease versus no plus disease. Plus disease was used mainly for the
 annotator variability analysis because the number of positive patients was small.
@@ -224,8 +216,8 @@ grader-specific grades from five graders. For each grader, grade 3 was mapped to
 plus disease, grades 1 and 2 were mapped to not-plus disease, and grade 0 was
 treated as an abstention and excluded for that grader. These grader labels are
 sparse: each image has labels from one to three graders, not complete labels from
-all five graders. All grader-specific analyses therefore used only images with an
-available non-abstention label from the corresponding grader.
+all five graders. All grader-specific analyses used only images with an available
+non-abstention label from the corresponding grader.
 
 \subsection{Splits and transfer settings}
 When patient identifiers were available, images were split at the patient level
@@ -285,7 +277,7 @@ For held-out model scores, AUC was interpreted in its rank-probability form,
 \]
 where \(s^+\) and \(s^-\) denote scores assigned to positive and negative images.
 
-Full fine tuning was used as a secondary robustness check rather than the primary
+Full fine tuning was used as a secondary robustness check, not as the primary
 benchmark. Fine tuning was performed on the Czech ROP-presence training split,
 with checkpoint selection on the Czech validation split and final evaluation on
 the Czech test split, all Shenzhen ROP-presence images and all HVDROPDB images.
@@ -341,21 +333,24 @@ not used as additional performance metrics.
 \section{Results}\label{sec:results}
 
 \subsection{Cross-site generalization drops under deployment shift}\label{sec:r-crosssite}
-A DINOv2 linear probe reached in-distribution AUC of 0.926 on Czech and 0.999 on
-Shenzhen for ROP presence, but transferring to another center reduced AUC to 0.822
-and 0.866 (Table~\ref{tab:crosssite}). External testing on HVDROPDB was also
-source-dependent, with AUC 0.739 after Czech training and 0.953 after Shenzhen
-training. Single-center metrics therefore substantially overstate transfer
-reliability, and HVDROPDB should be interpreted as an external test set only
-(Fig.~\ref{fig:crosssite}).
-These rows provide concrete stress test failures for single-center reporting.
-Czech training lost 0.104 AUC on Shenzhen and 0.187 AUC on HVDROPDB, while
-Shenzhen training lost 0.133 AUC on Czech. The HVDROPDB result also changed by
-0.214 AUC units depending on the training source. Thus the benchmark detects
-source-target dependence rather than merely reporting a lower pooled average.
-Representative high-confidence errors show that this effect corresponds to
-visible target-domain images rather than only to an abstract metric shift
-(Fig.~\ref{fig:failures}).
+A DINOv2 linear probe reached within-center AUC of 0.926 (95\% CI,
+0.826--0.981) on Czech and 0.999 (95\% CI, 0.996--1.000) on Shenzhen for ROP
+presence (Table~\ref{tab:crosssite}). The Shenzhen within-center result should
+not be read as evidence of near-perfect clinical recognition; it is also
+consistent with a curated or highly separable public dataset. Cross-center AUCs
+were lower: 0.822 (95\% CI, 0.789--0.854) for Czech-to-Shenzhen and 0.866
+(95\% CI, 0.755--0.921) for Shenzhen-to-Czech. External testing on HVDROPDB also
+varied by training source, with AUC 0.739 (95\% CI, 0.664--0.810) after Czech
+training and 0.953 (95\% CI, 0.925--0.978) after Shenzhen training. Because
+HVDROPDB lacks patient identifiers, these HVDROPDB intervals are image-level
+bootstrap intervals rather than patient-clustered intervals.
+
+The observed source changes were large in point estimate: Czech training lost
+0.104 AUC on Shenzhen and 0.187 AUC on HVDROPDB, while Shenzhen training lost
+0.133 AUC on Czech. The HVDROPDB point estimate differed by 0.214 AUC units
+between training sources, but this comparison is limited by the small image-level
+HVDROPDB test set (185 images). Representative high-confidence errors are shown
+only as illustrative examples (Fig.~\ref{fig:failures}).
 
 \begin{figure}[tbp]\centering
 \includegraphics[width=\columnwidth]{Fig1.pdf}
@@ -365,19 +360,20 @@ HVDROPDB, which lacks patient identifiers and is used only as an external test s
 \label{fig:crosssite}
 \end{figure}
 
-\begin{table}[t]\centering\footnotesize
-\caption{AUC for ROP presence with a DINOv2 linear probe. Parentheses mark
-within-center testing. Shen denotes Shenzhen, and HVD denotes HVDROPDB external
-testing}
+\begin{table*}[t]\centering\footnotesize
+\caption{AUC (95\% bootstrap CI) for ROP presence with a DINOv2 linear probe.
+Parentheses mark within-center testing. Shen denotes Shenzhen, and HVD denotes
+HVDROPDB external testing. Bootstrap resampling used patient clusters when
+available and image clusters for HVDROPDB}
 \label{tab:crosssite}
-\begin{tabular*}{\columnwidth}{@{\extracolsep{\fill}}lrrr@{}}
+\begin{tabular*}{0.82\textwidth}{@{\extracolsep{\fill}}llll@{}}
 \toprule
 train$\backslash$test & Czech & Shen & HVD \\ \midrule
-Czech    & (0.926) & 0.822 & 0.739 \\
-Shenzhen & 0.866 & (0.999) & 0.953 \\
+Czech    & (0.926 [.826--.981]) & 0.822 [.789--.854] & 0.739 [.664--.810] \\
+Shenzhen & 0.866 [.755--.921] & (0.999 [.996--1.000]) & 0.953 [.925--.978] \\
 \bottomrule
 \end{tabular*}
-\end{table}
+\end{table*}
 
 \begin{figure*}[tbp]\centering
 \includegraphics[width=0.84\textwidth]{Fig2.pdf}
@@ -391,23 +387,22 @@ no-active-ROP image under Shenzhen training, \(p_{\mathrm{ROP}}>0.99\)}
 \label{fig:failures}
 \end{figure*}
 
-\subsection{Representation rankings were benchmark-dependent}\label{sec:r-spectrum}
-The backbone comparison was used as a stress test of benchmark ranking stability,
-not as a claim that one pretrained model is universally best for ROP. In this
-public benchmark and implementation, the results did not follow a simple
-specialist-over-generalist ordering. Across the cross-center and HVDROPDB
+\subsection{Frozen representation results under matched probe settings}\label{sec:r-spectrum}
+The backbone analysis was exploratory and implementation-specific. Under matched
+$224{\times}224$ frozen linear-probe settings, the results did not follow a
+simple specialist-over-generalist ordering. Across the cross-center and HVDROPDB
 external-test rows, DINOv2, CLIP and ImageNet reached mean AUCs of 0.862, 0.844
 and 0.838, respectively, compared with 0.761 for RETFound
 (Table~\ref{tab:spectrum}). Under paired bootstrap testing, DINOv2 exceeded
 RETFound significantly in three rows and was not significantly worse in any row
-(Table~\ref{tab:bootstrap}; Fig.~\ref{fig:forest}). This should be read as
-benchmark-specific evidence that adult retinal pretraining did not guarantee the
-most stable representation in this pediatric wide-field setting.
+(Table~\ref{tab:bootstrap}; Fig.~\ref{fig:forest}). These results support only
+the narrower statement that, under this frozen-probe implementation, RETFound did
+not outperform the general-purpose backbones.
 
 \begin{figure}[tbp]\centering
 \includegraphics[width=\columnwidth]{Fig3.pdf}
-\caption{Representation ranking stress test on ROP presence. Values are paired
-AUC differences between DINOv2 and RETFound from the same test predictions.
+\caption{Paired DINOv2 and RETFound comparison on ROP presence. Values are
+paired AUC differences from the same test predictions.
 Intervals come from a paired bootstrap with patient clusters when available and
 image clusters for HVD. Shen denotes Shenzhen, and HVD denotes HVDROPDB. Blue
 intervals exclude zero}
@@ -417,9 +412,8 @@ intervals exclude zero}
 The same ordering was observed in the 100\% data fine-tuning experiment trained on
 Czech and evaluated on Czech, Shenzhen and HVDROPDB. DINOv2 reached AUCs of 0.90,
 0.93 and 0.86; RETFound reached 0.77, 0.84 and 0.78; and random initialization
-reached 0.52, 0.70 and 0.61. Because this experiment uses one source center, it
-supports the benchmark finding but does not by itself establish a universal
-ranking across all retinal foundation models.
+reached 0.52, 0.70 and 0.61. This single-source fine-tuning check was not
+designed to establish a general ranking across retinal foundation models.
 
 \begin{table}[t]\centering\scriptsize
 \caption{Backbone spectrum for ROP presence using frozen linear probes at 224
@@ -444,7 +438,7 @@ Shen$\to$HVD     & 0.948 & 0.902 & 0.920 & 0.760 \\ \midrule
 \end{table}
 
 \begin{table}[t]\centering\scriptsize
-\caption{Paired representation ranking stress test for ROP presence with frozen
+\caption{Paired DINOv2 versus RETFound comparison for ROP presence with frozen
 probes at 224 pixel input resolution. Shen denotes Shenzhen, and HVD denotes
 HVDROPDB external testing. The paired bootstrap uses 2{,}000 resamples}
 \label{tab:bootstrap}
@@ -462,18 +456,18 @@ Shen$\to$Cz      & 0.778 & 0.707 & $+0.071$ [$-$.05, .21] & ns \\
 \end{tabular*}
 \end{table}
 
-\subsection{Benchmark verdicts depend on sparse annotator labels}\label{sec:r-annot}
+\subsection{Sparse grader labels changed evaluable subsets and apparent performance}\label{sec:r-annot}
 FARFUM-RoP contains sparse grader-specific plus disease labels from five graders,
 not complete five-grader labels for every image. A single DINOv2 model trained on
 consensus-style labels was evaluated separately against each grader's available
 labels. Across these grader-specific evaluable subsets, AUC ranged from 0.930 to
 0.996 (\(\Delta=0.066\)). Human-human Cohen $\kappa$, computed only on overlapping
 labels, had mean 0.806 and ranged from 0.671 to 1.000. Model-grader agreement had
-mean 0.784 and ranged from 0.494 to 0.908 (Fig.~\ref{fig:kappa}). A benchmark
-verdict based on one available grader can therefore differ by about seven AUC
-points from the verdict obtained with another grader, although this spread
-reflects both grader reference differences and differences in the sparse image
-subsets available for each grader.
+mean 0.784 and ranged from 0.494 to 0.908 (Fig.~\ref{fig:kappa}). This AUC spread
+should not be interpreted as a pure grader-reference effect because the evaluable
+image subset also changed across graders. It shows that sparse grader labels can
+alter both the reference label and the test subset used to estimate model
+performance.
 
 \begin{figure}[tbp]\centering
 \includegraphics[width=\columnwidth]{Fig4.pdf}
@@ -485,78 +479,54 @@ so single-annotator labels should be treated as uncertain}
 \end{figure}
 
 \section{Discussion}\label{sec:discussion}
-This study frames public ROP datasets as stress tests of benchmark stability
-rather than as a leaderboard for a particular model family. The main finding is
-that public ROP AI benchmark conclusions were unstable under both source shift
-and label-reference shift. Single-center performance was an optimistic estimate
-of deployment performance: DINOv2 achieved very high within-center AUCs, but
-performance decreased when the training and test centers changed, and HVDROPDB
-external-test performance varied substantially by training source. This pattern
-is consistent with the broader ROP AI literature: algorithms can be useful in
-external validation, but their performance must be demonstrated in the target
-imaging setting rather than assumed from development data
-~\cite{coyner2022,coyner2024}.
+This study shows that performance estimates from public ROP datasets changed
+with the source dataset and the available label reference. Within-center AUCs
+were higher than cross-center AUCs, and HVDROPDB external-test performance varied
+by training source. The Shenzhen within-center result was nearly perfect, but
+that result is also compatible with a curated or highly separable public dataset.
+These findings are consistent with prior external validation work showing that
+ROP AI models must be evaluated in the target imaging setting rather than assumed
+to transfer from development data~\cite{coyner2022,coyner2024}.
 
-For clinical translation, the relevant question is not whether a model reaches a
-high AUC on a single public dataset. The relevant question is whether the model
-remains reliable when the camera, center, patient spectrum and annotation process
-change. ROP screening programs often span different neonatal units, telemedicine
-workflows and wide-field cameras. A benchmark that preserves dataset identity and
-tests explicit source-to-target transfer is therefore more informative than a
-pooled random split, even when the pooled split produces a larger sample size.
+The representation comparison should be interpreted within its implementation
+limits. Under matched frozen-probe settings, RETFound did not outperform DINOv2,
+CLIP or ImageNet features in this analysis, and the Czech fine-tuning check
+showed the same ordering. This comparison does not isolate pretraining domain
+from architecture, preprocessing, input resolution, linear-probe regularization or
+fine-tuning seed. It supports the practical conclusion that model rankings in
+public ROP datasets should be checked under the intended evaluation protocol.
 
-Second, model ranking itself was a benchmark-dependent conclusion. The
-representation comparison should therefore be interpreted as an example of
-ranking fragility under public benchmark conditions, not as a paper about two
-specific models. In this benchmark and implementation, RETFound did not
-consistently outperform DINOv2, CLIP or ImageNet features under frozen probing,
-and the same ordering was seen in the Czech fine-tuning experiment. This finding
-should not be interpreted as a general verdict against retinal foundation models.
-The comparison used fixed linear-probe settings, one primary fine-tuning source
-and single-seed fine-tuning, and the models differed in architecture and
-preprocessing. A more careful interpretation is that adult retinal fundus
-pretraining may not fully match the imaging geometry, age group and disease
-phenotype of ROP. The result supports evaluation of pediatric, wide-field or
-ROP-specific representation learning rather than assuming that adult retinal
-pretraining is sufficient.
+The FARFUM-RoP annotator analysis highlights a separate limitation of public
+labels. The grader-specific AUC spread combines differences in reference labels
+with differences in the evaluable image subsets, because the five graders did not
+label the same complete image set. Plus disease is also known to have imperfect
+expert agreement~\cite{chiang2007}. ROP AI studies should report whether labels
+come from consensus, single-grader or sparse multi-grader annotations, and should
+avoid treating one available grader label as a perfect reference standard.
 
-Third, the benchmark verdict depended on the human label source. FARFUM-RoP did
-not provide complete five-grader labels per image; it provided sparse grader
-annotations. Even under this constraint, the same fixed model produced a spread
-of approximately seven AUC points across grader-specific test subsets. This is
-not simply a machine learning problem, and it should not be attributed only to
-different grading thresholds because the grader-specific subsets are not
-identical. It also reflects a known clinical issue: plus disease is a continuous
-vascular phenotype that is forced into categorical labels, and expert
-disagreement has been documented for image-based plus disease
-diagnosis~\cite{chiang2007}. ROP AI studies should therefore report the available
-multi-rater structure, specify whether labels are consensus, single-grader or
-sparse multi-grader labels, and avoid treating one grader as a perfect reference
-standard.
-
-The benchmark also illustrates why public data are useful even when they are not
-perfect. Public ROP datasets make independent comparison possible, but they were
-not collected with a shared protocol. The value of this study is not that it
-creates a definitive clinical screening system. Rather, it makes visible the
-performance loss, model-ranking changes and label sensitivity that are hidden by
-single-dataset reporting. These findings argue for future prospective validation
-with prespecified patient-level splits, camera-level reporting, image quality
-assessment and multi-rater adjudication.
+Public ROP datasets make independent comparison possible, but they were not
+collected with a shared protocol. This study quantifies performance loss across
+source changes and label-reference changes that would be missed by pooled or
+single-source evaluation. Future validation studies should prespecify
+patient-level splits, report camera or acquisition strata, include image-quality
+assessment and use multi-rater adjudication where feasible.
 
 \subsection{Limitations}\label{sec:limitations}
 ROP-positive patients are scarce in public data, which limits subgroup slicing.
 The primary endpoint was active ROP presence rather than referable ROP or
 treatment requiring ROP. This endpoint was chosen because referable ROP and plus
-disease labels were not available with enough positive patients for stable
-cross-center transfer analysis across public datasets. The plus-disease task is
-therefore secondary and patient-limited. We did not have enough positive cases for
+disease labels were not available with enough positive patients for cross-center
+transfer analysis across public datasets. The plus-disease task is secondary and
+patient-limited. We did not have enough positive cases for
 a population controlled device analysis within one center, so this benchmark
 should not be read as a validation study stratified by device. Shenzhen is curated
 and nearly separable in distribution. HVDROPDB is small, with 185 images and no
 patient identifiers, so it is used only as an external test set in the primary
 analysis. Labels are mostly consensus single annotations, and FARFUM-RoP's
 multi-rater labels are sparse rather than complete five-grader labels. We did not
-perform external prospective clinical validation.
+perform a matched-overlap grader analysis because the overlap among non-abstention
+grader labels was limited. We did not perform external prospective clinical
+validation.
 
 \backmatter
 

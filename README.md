@@ -1,9 +1,9 @@
 # ROP-Bench
 
 This repository contains code, harmonized public metadata, split files, result
-tables and manuscript figures for a public benchmark showing that retinopathy of
-prematurity (ROP) artificial intelligence benchmarks are unstable under source
-and label shift.
+tables and manuscript figures for a public retinopathy of prematurity (ROP)
+artificial intelligence benchmark evaluating how dataset source and label
+reference affect performance estimates.
 
 The manuscript analyzes four public ROP fundus image datasets:
 
