@@ -1,9 +1,18 @@
 cff-version: 1.2.0
 message: "If you use this software or metadata, please cite the associated manuscript and this archived release."
-title: "ROP-Bench: a public retinopathy of prematurity AI benchmark under center and annotator shift"
+title: "Public retinopathy of prematurity AI benchmarks are unstable under source and label shift"
 authors:
   - family-names: Luo
     given-names: Jin
+    orcid: "https://orcid.org/0009-0007-1277-7692"
+  - family-names: Guo
+    given-names: Dongwei
+  - family-names: Chen
+    given-names: Xinsi
+  - family-names: Liang
+    given-names: Hao
+  - family-names: Lin
+    given-names: Fang
 version: "1.0.2"
 date-released: "2026-06-17"
 repository-code: "https://github.com/foye80/rop-bench"
