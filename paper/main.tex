@@ -11,43 +11,43 @@
 
 \begin{document}
 
-\title[ROP AI under center and annotator shift]{A public retinopathy of
-prematurity AI benchmark under center and annotator shift}
+\title[ROP benchmarks under source and label shift]{Public retinopathy of
+prematurity AI benchmarks are unstable under source and label shift}
 
 \author*[1]{\fnm{Jin} \sur{Luo}}\email{luojin@xmu.edu.cn}
 
 \affil*[1]{\orgname{The First Affiliated Hospital of Xiamen University},
   \orgaddress{\city{Xiamen}, \country{China}}}
 
-\abstract{\textbf{Purpose:} To evaluate how public retinopathy of prematurity
-(ROP) artificial intelligence benchmarks change under center and annotator
-shift, and whether RETFound consistently outperforms general-purpose visual
-pretraining in pediatric wide-field imaging.
+\abstract{\textbf{Purpose:} To test whether conclusions from public retinopathy
+of prematurity (ROP) artificial intelligence benchmarks remain stable when the
+dataset source and human label reference change.
 
 \textbf{Methods:} Four public ROP fundus datasets were harmonized into a
 benchmark of 8{,}821 images. ROP presence was the primary transfer task and plus
 disease was a secondary annotator variability task because plus-positive patients
-were scarce in the public data. DINOv2, CLIP, ImageNet and RETFound backbones
-were evaluated with frozen linear probes at matched resolution. DINOv2 and
-RETFound were also compared with full fine-tuning. HVDROPDB lacked patient
-identifiers and was used only as an external test set. Uncertainty was estimated
-by paired bootstrap.
+were scarce in the public data. Dataset-to-dataset transfer was used to measure
+source shift. Sparse FARFUM-RoP grader labels were used to measure label-reference
+sensitivity. DINOv2, CLIP, ImageNet and RETFound backbones were used as
+representative stress tests of benchmark ranking stability, with matched frozen
+linear probes and a secondary fine-tuning check. HVDROPDB lacked patient
+identifiers and was used only as an external test set.
 
 \textbf{Results:} A DINOv2 linear probe achieved within-center AUCs of 0.926 on
 Czech and 0.999 on Shenzhen, but cross-center AUC decreased to 0.822 and 0.866.
 HVDROPDB external-test AUC ranged from 0.739 to 0.953 by training source.
-Across transfer settings, DINOv2, CLIP and ImageNet reached mean AUCs of 0.862,
-0.844 and 0.838, compared with 0.761 for RETFound. DINOv2 was significantly
-higher than RETFound in three rows and was not significantly lower in any row.
-With sparse FARFUM-RoP grader labels, model AUC varied by 0.066 across
-grader-specific evaluable subsets.
+Backbone rankings did not follow a simple specialist-over-generalist pattern:
+across transfer settings, DINOv2, CLIP and ImageNet reached mean AUCs of 0.862,
+0.844 and 0.838, compared with 0.761 for RETFound. With sparse FARFUM-RoP grader
+labels, the same model's AUC varied by 0.066 across grader-specific evaluable
+subsets.
 
-\textbf{Conclusion:} ROP AI reliability should be assessed across centers,
-dataset sources and annotators. In this public benchmark, RETFound did not
-consistently outperform general-purpose visual pretraining.}
+\textbf{Conclusion:} Public ROP AI benchmarks are sensitive to dataset source and
+label reference. Single-source or single-label benchmark results should therefore
+be interpreted as stability tests, not as definitive model rankings.}
 
-\keywords{retinopathy of prematurity, artificial intelligence, domain shift,
-foundation models, pediatric ophthalmology, external validation}
+\keywords{retinopathy of prematurity, artificial intelligence, benchmark
+stability, source shift, label variability, pediatric ophthalmology}
 
 \maketitle
 
@@ -81,15 +81,16 @@ within-center performance from cross-center transfer, and should make explicit
 which datasets can support patient-level splitting and which can only support
 image-level external testing.
 
-The rapid rise of foundation models adds another unresolved question. Retinal
-foundation models such as RETFound are trained on large ophthalmic image
-collections and are often expected to transfer well across eye disease
-tasks~\cite{retfound2023}. Yet ROP imaging differs from the adult retinal fundus
-photographs that dominate many pretraining datasets. ROP is imaged in premature
-infants, often with wide-field contact cameras, and the clinically relevant signal
-includes peripheral vascular and developmental features. It is therefore not
-obvious that adult retinal pretraining will dominate general-purpose visual
-pretraining for pediatric ROP.
+The rapid rise of foundation models creates a useful stress test for benchmark
+stability. Retinal foundation models such as RETFound are trained on large
+ophthalmic image collections and are often expected to transfer well across eye
+disease tasks~\cite{retfound2023}. Yet ROP imaging differs from the adult retinal
+fundus photographs that dominate many pretraining datasets. ROP is imaged in
+premature infants, often with wide-field contact cameras, and the clinically
+relevant signal includes peripheral vascular and developmental features. If a
+public benchmark gives a different model ranking after a change in source dataset
+or evaluation label, the issue is not only which model wins; it is whether the
+benchmark conclusion is stable enough to guide translation.
 
 Label uncertainty is a second major obstacle. Plus disease diagnosis is known to
 have imperfect interexpert agreement even among recognized ROP experts
@@ -105,16 +106,17 @@ stable cross-center transfer analysis. We therefore use active ROP presence as
 the primary transfer task and treat plus disease as a secondary annotator
 variability task.
 
-We build a multi-source public ROP benchmark and use it to ask three questions:
-how much performance is lost across centers and dataset sources; whether RETFound
-consistently outperforms general-purpose backbones on pediatric ROP; and how much
-the benchmark verdict depends on the available human grader labels. Our
-contributions are (i)~a unified benchmark over four public datasets spanning four
-countries and multiple camera systems; (ii)~a cross-site and external-test
-reliability map showing large generalization gaps; (iii)~evidence that RETFound
-does not consistently outperform general-purpose visual pretraining in this
-pediatric wide-field setting; and (iv)~a quantification of benchmark sensitivity
-under sparse multi-rater labels.
+We build a multi-source public ROP benchmark and use it to ask three stability
+questions: how much performance changes across dataset sources; whether the
+ranking of pretrained visual representations is stable under these public
+benchmark conditions; and how much the benchmark verdict changes when different
+human grader labels are treated as the reference. Our contributions are
+(i)~a unified benchmark over four public datasets spanning four countries and
+multiple camera systems; (ii)~a cross-site and external-test reliability map
+showing large source-dependent generalization gaps; (iii)~a representation
+ranking stress test showing that adult retinal pretraining did not provide a
+stable advantage in this pediatric wide-field setting; and (iv)~a quantification
+of benchmark sensitivity under sparse multi-rater labels.
 
 \section{Materials and methods}\label{sec:methods}
 
@@ -357,24 +359,26 @@ no-active-ROP image under Shenzhen training, \(p_{\mathrm{ROP}}>0.99\)}
 \label{fig:failures}
 \end{figure*}
 
-\subsection{RETFound did not consistently outperform general-purpose backbones}\label{sec:r-spectrum}
-In this public benchmark and implementation, RETFound did not consistently
-outperform general-purpose visual pretraining. Across the cross-center and
-HVDROPDB external-test rows, DINOv2, CLIP and ImageNet reached mean AUCs of 0.862,
-0.844 and 0.838, respectively, compared with 0.761 for RETFound
+\subsection{Representation rankings were benchmark-dependent}\label{sec:r-spectrum}
+The backbone comparison was used as a stress test of benchmark ranking stability,
+not as a claim that one pretrained model is universally best for ROP. In this
+public benchmark and implementation, the results did not follow a simple
+specialist-over-generalist ordering. Across the cross-center and HVDROPDB
+external-test rows, DINOv2, CLIP and ImageNet reached mean AUCs of 0.862, 0.844
+and 0.838, respectively, compared with 0.761 for RETFound
 (Table~\ref{tab:spectrum}). Under paired bootstrap testing, DINOv2 exceeded
 RETFound significantly in three rows and was not significantly worse in any row
-(Table~\ref{tab:bootstrap}; Fig.~\ref{fig:forest}). This result should be read as
+(Table~\ref{tab:bootstrap}; Fig.~\ref{fig:forest}). This should be read as
 benchmark-specific evidence that adult retinal pretraining did not guarantee the
-best representation in this pediatric wide-field setting, not as a general verdict
-against retinal pretraining for ROP.
+most stable representation in this pediatric wide-field setting.
 
 \begin{figure}[tbp]\centering
 \includegraphics[width=\columnwidth]{Fig3.pdf}
-\caption{Head-to-head DINOv2 and RETFound comparison on ROP presence. Values are
-paired AUC differences from the same test predictions. Intervals come from a
-paired bootstrap with patient clusters when available and image clusters for HVD.
-Shen denotes Shenzhen, and HVD denotes HVDROPDB. Blue intervals exclude zero}
+\caption{Representation ranking stress test on ROP presence. Values are paired
+AUC differences between DINOv2 and RETFound from the same test predictions.
+Intervals come from a paired bootstrap with patient clusters when available and
+image clusters for HVD. Shen denotes Shenzhen, and HVD denotes HVDROPDB. Blue
+intervals exclude zero}
 \label{fig:forest}
 \end{figure}
 
@@ -408,9 +412,9 @@ Shen$\to$HVD     & 0.948 & 0.902 & 0.920 & 0.760 \\ \midrule
 \end{table}
 
 \begin{table}[t]\centering\scriptsize
-\caption{Head-to-head DINOv2 vs.\ RETFound comparison for ROP presence with
-frozen probes at 224 pixel input resolution. Shen denotes Shenzhen, and HVD
-denotes HVDROPDB external testing. The paired bootstrap uses 2{,}000 resamples}
+\caption{Paired representation ranking stress test for ROP presence with frozen
+probes at 224 pixel input resolution. Shen denotes Shenzhen, and HVD denotes
+HVDROPDB external testing. The paired bootstrap uses 2{,}000 resamples}
 \label{tab:bootstrap}
 \setlength{\tabcolsep}{2pt}
 \begin{tabular*}{\columnwidth}{@{\extracolsep{\fill}}lrrcc@{}}
@@ -449,14 +453,17 @@ so single-annotator labels should be treated as uncertain}
 \end{figure}
 
 \section{Discussion}\label{sec:discussion}
-This public benchmark gives three practical messages for ROP AI. First,
-single-center performance was an optimistic estimate of deployment performance.
-DINOv2 achieved very high within-center AUCs, but performance decreased when the
-training and test centers changed, and HVDROPDB external-test performance varied
-substantially by training source. This pattern is consistent with the broader ROP
-AI literature: algorithms can be useful in external validation, but their
-performance must be demonstrated in the target imaging setting rather than
-assumed from development data~\cite{coyner2022,coyner2024}.
+This study frames public ROP datasets as stress tests of benchmark stability
+rather than as a leaderboard for a particular model family. The main finding is
+that public ROP AI benchmark conclusions were unstable under both source shift
+and label-reference shift. Single-center performance was an optimistic estimate
+of deployment performance: DINOv2 achieved very high within-center AUCs, but
+performance decreased when the training and test centers changed, and HVDROPDB
+external-test performance varied substantially by training source. This pattern
+is consistent with the broader ROP AI literature: algorithms can be useful in
+external validation, but their performance must be demonstrated in the target
+imaging setting rather than assumed from development data
+~\cite{coyner2022,coyner2024}.
 
 For clinical translation, the relevant question is not whether a model reaches a
 high AUC on a single public dataset. The relevant question is whether the model
@@ -466,18 +473,20 @@ workflows and wide-field cameras. A benchmark that preserves dataset identity an
 tests explicit source-to-target transfer is therefore more informative than a
 pooled random split, even when the pooled split produces a larger sample size.
 
-Second, retinal pretraining was not automatically superior for pediatric
-wide-field ROP. In this benchmark and implementation, RETFound did not
+Second, model ranking itself was a benchmark-dependent conclusion. The
+representation comparison should therefore be interpreted as an example of
+ranking fragility under public benchmark conditions, not as a paper about two
+specific models. In this benchmark and implementation, RETFound did not
 consistently outperform DINOv2, CLIP or ImageNet features under frozen probing,
 and the same ordering was seen in the Czech fine-tuning experiment. This finding
 should not be interpreted as a general verdict against retinal foundation models.
-The comparison used fixed linear-probe settings, one
-primary fine-tuning source and single-seed fine-tuning, and the models differed in
-architecture and preprocessing. A more careful interpretation is that adult
-retinal fundus pretraining may not fully match the imaging geometry, age group and
-disease phenotype of ROP. The result supports evaluation of pediatric,
-wide-field or ROP-specific representation learning rather than assuming that adult
-retinal pretraining is sufficient.
+The comparison used fixed linear-probe settings, one primary fine-tuning source
+and single-seed fine-tuning, and the models differed in architecture and
+preprocessing. A more careful interpretation is that adult retinal fundus
+pretraining may not fully match the imaging geometry, age group and disease
+phenotype of ROP. The result supports evaluation of pediatric, wide-field or
+ROP-specific representation learning rather than assuming that adult retinal
+pretraining is sufficient.
 
 Third, the benchmark verdict depended on the human label source. FARFUM-RoP did
 not provide complete five-grader labels per image; it provided sparse grader
